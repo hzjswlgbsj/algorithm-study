@@ -1,4 +1,4 @@
-import Node, { INode } from './Node';
+import Node, { INode } from "./Node";
 interface IBST {
   root: any;
   insert: (data: any) => void; // 向二叉查找树中插入值
@@ -17,11 +17,11 @@ interface IBST {
 }
 
 // 二叉查找树
-export class BST implements IBST{
+export class BST implements IBST {
   public root: any = null;
 
   public showTree() {
-    console.log('当前树结构', this.root)
+    console.log("当前树结构", this.root);
   }
   public insert(data: any) {
     const node = new Node(data, null, null);
@@ -52,43 +52,43 @@ export class BST implements IBST{
   // 中序遍历
   public inOrder(node: null | Node, cb?: (node: Node) => void) {
     if (!(node === null)) {
-      this.inOrder(node.left, cb);       
+      this.inOrder(node.left, cb);
       // node.show();
-      if (cb && typeof cb === 'function') {
+      if (cb && typeof cb === "function") {
         cb(node);
       }
-      this.inOrder(node.right, cb);    
-    } 
+      this.inOrder(node.right, cb);
+    }
   }
 
   // 前序遍历
   public preOrder(node: null | Node, cb?: (node: Node) => void) {
-    if (!(node === null)) {    
+    if (!(node === null)) {
       // node.show()
-      if (cb && typeof cb === 'function') {
+      if (cb && typeof cb === "function") {
         cb(node);
       }
-      this.preOrder(node.left, cb);       
-      this.preOrder(node.right, cb);    
-    } 
+      this.preOrder(node.left, cb);
+      this.preOrder(node.right, cb);
+    }
   }
 
   // 后序遍历
   public postOrder(node: null | Node, cb?: (node: Node) => void) {
-    if (!(node === null)) {    
-      this.postOrder(node.left, cb);       
+    if (!(node === null)) {
+      this.postOrder(node.left, cb);
       this.postOrder(node.right, cb);
       // node.show()
-      if (cb && typeof cb === 'function') {
+      if (cb && typeof cb === "function") {
         cb(node);
       }
-    } 
+    }
   }
 
   public getMin() {
     let current = this.root;
     while (current.left !== null) {
-      current = current.left
+      current = current.left;
     }
 
     return current.data;
@@ -96,7 +96,7 @@ export class BST implements IBST{
   public getMax() {
     let current = this.root;
     while (current.right !== null) {
-      current = current.right
+      current = current.right;
     }
 
     return current.data;
@@ -107,7 +107,6 @@ export class BST implements IBST{
   // public find(data: any) {
   //   let findNode = null;
   //   this.inOrder(this.root, (node: Node) => {
-  //     console.log(11111111)
   //     if (data === node.data) {
   //       findNode = node
   //     }
@@ -121,32 +120,32 @@ export class BST implements IBST{
     var current = this.root;
     while (current != null) {
       if (current.data == data) {
-        return current;         
+        return current;
       } else if (data < current.data) {
         current = current.left;
       } else {
         current = current.right;
       }
     }
-    return null; 
+    return null;
   }
 
   // 从 BST 中删除节点的第一步是判断当前节点是否包含待删除的数据，如果包含，则删除该节点；
   // 如果不包含，则比较当前节点上的数据和待删除的数据。如果待删除数据小于当前 节点上的数据，
   // 则移至当前节点的左子节点继续比较；如果删除数据大于当前节点上的数 据，则移至当前节点的右子节点继续比较。
-  
+
   // 如果待删除节点是叶子节点（没有子节点的节点），那么只需要将从父节点指向它的链接指向 null。
   // 如果待删除节点只包含一个子节点，那么原本指向它的节点久得做些调整，使其指向它的子节点。
 
   // 最后，如果待删除节点包含两个子节点，正确的做法有两种：要么查找待删除节点左子树上的最大值，
   // 要么查找其右子树上的最小值。这里我们选择后一种方式。
   public remove(data: any) {
-    this.removeNode(this.root, data)
+    this.removeNode(this.root, data);
   }
 
   public removeNode(node: null | Node, data: any) {
     if (node === null) {
-      return null
+      return null;
     }
 
     if (node.data === data) {
@@ -167,7 +166,7 @@ export class BST implements IBST{
       if (tempNode) {
         node.data = tempNode.data;
         node.right = this.removeNode(node.right, tempNode.data);
-        return node; 
+        return node;
       }
     } else if (data < node.data) {
       node.left = this.removeNode(node.left, data);
@@ -177,25 +176,25 @@ export class BST implements IBST{
       return node;
     }
 
-    return null
+    return null;
   }
 
   public min(node: INode): INode | null {
     if (node.left) {
-      return this.min(node.left)
+      return this.min(node.left);
     }
     return null;
   }
   public max(node: INode): INode | null {
     if (node.right) {
-      return this.max(node.right)
+      return this.max(node.right);
     }
     return null;
   }
   public updateCount(data: any): INode | null {
     const node = this.find(data);
     if (node) {
-      node.count++
+      node.count++;
     }
     return node;
   }

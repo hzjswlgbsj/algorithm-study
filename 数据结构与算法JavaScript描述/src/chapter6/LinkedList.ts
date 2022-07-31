@@ -1,18 +1,19 @@
-import Node, { INode } from './Node';
+import Node, { INode } from "./Node";
 export interface ILinkedList {
   head: INode;
   find: (element: any) => any; // 根据element值查找对应的Node并返回
   findPrevious: (element: any) => any | null; // 根据element值查找对应的前一个Node并返回
   insert: (newElement: any, item: any) => void; // 根据item，在item后面插入一个Node
-  display:() => void; // 显示队列里所有元素
+  display: () => void; // 显示队列里所有元素
   remove: (element: any) => boolean; // 删除给定element的节点
+  append: (val: any) => void; // 在链表末尾增加节点
 }
 
 export default class LinkedList implements ILinkedList {
   public head: INode;
 
   constructor() {
-    this.head = new Node('head');
+    this.head = new Node("head");
   }
 
   public find(element: any) {
@@ -48,10 +49,26 @@ export default class LinkedList implements ILinkedList {
     curNode.next = newNode;
   }
 
+  public append(val: any) {
+    let node = new Node(val);
+    let p = this.head; // 一般不要直接修改head
+
+    if (p) {
+      // 找到链表的最后一个节点，把这个节点的 next 属性设置为node
+      while (p.next) {
+        p = p.next;
+      }
+      p.next = node;
+    } else {
+      // 如果没有head节点的话说明链表是空的，将当前的节点设置为head
+      this.head = node;
+    }
+  }
+
   public display() {
     let curNode = this.head;
     while (curNode.next !== null) {
-      console.log(curNode.next.element)
+      console.log(curNode.next.element);
       curNode = curNode.next;
     }
   }

@@ -29,6 +29,8 @@ interface SinglyListNode {
 
 
 ## 实现单链表
+
+### 分析与要求
 设计链表的实现。您可以选择使用单链表或双链表。单链表中的节点应该具有两个属性：`val` 和 `next`。`val` 是当前节点的值，`next` 是指向下一个节点的指针/引用。如果要使用双向链表，则还需要一个属性 `prev` 以指示链表中的上一个节点。假设链表中的所有节点都是 0-index 的。
 
 在链表类中实现这些功能：
@@ -49,6 +51,158 @@ linkedList.deleteAtIndex(1);  // 现在链表是1-> 3
 linkedList.get(1);            // 返回3
 ```
 
+### 实现
+```javascript
+var MyLinkedList = function() {
+    this.head = null
+    this.size = 0
+};
+
+/** 
+ * @param {number} index
+ * @return {number}
+ */
+MyLinkedList.prototype.get = function(index) {
+  if (index >= this.size || index < 0) {
+    return -1
+  } else {
+    let curNode = this.head
+    let curIndex = 0
+    while(curNode) {
+      if (curIndex === index) {
+        return curNode.val
+      } else {
+        curIndex++
+      }
+      curNode = curNode.next
+    }
+
+    return -1
+  }
+};
+
+/** 
+ * @param {number} val
+ * @return {void}
+ */
+MyLinkedList.prototype.addAtHead = function(val) {
+  if (!this.head) {
+    this.head = {val, next: null}
+  } else {
+    const temp = this.head
+    this.head = {
+      val,
+      next: temp,
+    }
+  }
+  
+  this.size++
+};
+
+/** 
+ * @param {number} val
+ * @return {void}
+ */
+MyLinkedList.prototype.addAtTail = function(val) {
+  if (!this.head) {
+    this.head = {
+      val,
+      next: null
+    }
+  } else {
+    let last = null
+    let curNode = this.head
+    while(curNode) {
+      if (!curNode.next) {
+        last = curNode
+        break
+      }
+      curNode = curNode.next
+    }
+
+    last.next = {
+        val,
+        next: null
+    }
+  }
+  this.size++
+};
+
+/** 
+ * @param {number} index 
+ * @param {number} val
+ * @return {void}
+ */
+MyLinkedList.prototype.addAtIndex = function(index, val) {
+  if (index > this.size) {
+    return
+  } else if (index === this.size) {
+    this.addAtTail(val)
+  } else if (index <= 0) {
+    this.addAtHead(val)
+  } else {
+    let curNode = this.head
+    let last = null
+    let curIndex = 0
+    while(curNode) {
+      if (curIndex === index - 1) {
+        last = curNode
+        break
+      } else {
+        curIndex++
+      }
+      curNode = curNode.next
+    }
+
+    const next = last.next
+    last.next = {
+      val,
+      next
+    }
+  }
+
+  this.size++
+};
+
+/** 
+ * @param {number} index
+ * @return {void}
+ */
+MyLinkedList.prototype.deleteAtIndex = function(index) {
+  if (index >= this.size || index < 0) {
+    return
+  } else if (index === 0) {
+    this.head = this.head.next
+  } else {
+    let curNode = this.head
+    let last = null
+    let curIndex = 0
+    while(curNode) {
+      if (curIndex === index - 1) {
+        last = curNode
+        break
+      } else {
+        curIndex++
+      }
+      curNode = curNode.next
+    }
+
+    last.next = last.next ? last.next.next : null
+  }
+
+  this.size--
+};
+
+/**
+ * Your MyLinkedList object will be instantiated and called as such:
+ * var obj = new MyLinkedList()
+ * var param_1 = obj.get(index)
+ * obj.addAtHead(val)
+ * obj.addAtTail(val)
+ * obj.addAtIndex(index,val)
+ * obj.deleteAtIndex(index)
+ */
+```
 
 
 ## 单链表添加操作

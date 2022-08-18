@@ -49,6 +49,8 @@ linkedList.deleteAtIndex(1);  // 现在链表是1-> 3
 linkedList.get(1);            // 返回3
 ```
 
+
+
 ## 单链表添加操作
 如果要在单链表的 `prev` 节点后面添加一个新的节点步骤如下：
 1. 创建一个新的节点 `cur`

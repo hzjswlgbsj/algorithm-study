@@ -51,6 +51,28 @@ linkedList.deleteAtIndex(1);  // 现在链表是1-> 3
 linkedList.get(1);            // 返回3
 ```
 
+
+### 单链表添加操作
+如果要在单链表的 `prev` 节点后面添加一个新的节点步骤如下：
+1. 创建一个新的节点 `cur`
+2. 将 `prev` 的 `next` 节点链接到 `cur` 的 `next` 字段上
+3. 将 `cur` 节点链接到 `prev` 的 `next` 字段
+
+如果是在头节点添加节点，除了上面的步骤外，还需要将 `cur` 节点设置为链表的 `head` 节点。
+
+### 单链表删除操作
+
+如果想从单链表中删除现有结点 `cur`，可以分两步完成：
+
+1. 找到 `cur` 的上一个结点 `prev` 及其下一个结点 `next` 
+2. 接下来链接 `prev` 到 `cur` 的下一个节点 `next` 
+
+在我们的第一步中，我们需要找出 prev 和 next。使用 cur 的参考字段很容易找出 next，但是，我们必须从头结点遍历链表，以找出 prev，它的平均时间是 O(N)，其中 N 是链表的长度。因此，删除结点的时间复杂度将是 O(N)。
+
+空间复杂度为 O(1)，因为我们只需要常量空间来存储指针。
+
+如果要删除头节点的话可以直接将链表的 `head` 指向现在头节点的 `next` 节点
+
 ### 实现
 ```javascript
 var MyLinkedList = function() {
@@ -192,41 +214,9 @@ MyLinkedList.prototype.deleteAtIndex = function(index) {
 
   this.size--
 };
-
-/**
- * Your MyLinkedList object will be instantiated and called as such:
- * var obj = new MyLinkedList()
- * var param_1 = obj.get(index)
- * obj.addAtHead(val)
- * obj.addAtTail(val)
- * obj.addAtIndex(index,val)
- * obj.deleteAtIndex(index)
- */
 ```
 
-
-## 单链表添加操作
-如果要在单链表的 `prev` 节点后面添加一个新的节点步骤如下：
-1. 创建一个新的节点 `cur`
-2. 将 `prev` 的 `next` 节点链接到 `cur` 的 `next` 字段上
-3. 将 `cur` 节点链接到 `prev` 的 `next` 字段
-
-如果是在头节点添加节点，除了上面的步骤外，还需要将 `cur` 节点设置为链表的 `head` 节点。
-
-## 单链表删除操作
-
-如果想从单链表中删除现有结点 `cur`，可以分两步完成：
-
-1. 找到 `cur` 的上一个结点 `prev` 及其下一个结点 `next` 
-2. 接下来链接 `prev` 到 `cur` 的下一个节点 `next` 
-
-在我们的第一步中，我们需要找出 prev 和 next。使用 cur 的参考字段很容易找出 next，但是，我们必须从头结点遍历链表，以找出 prev，它的平均时间是 O(N)，其中 N 是链表的长度。因此，删除结点的时间复杂度将是 O(N)。
-
-空间复杂度为 O(1)，因为我们只需要常量空间来存储指针。
-
-如果要删除头节点的话可以直接将链表的 `head` 指向现在头节点的 `next` 节点
-
-## 用链表实现 LRU 缓存淘汰策略
+### 用链表实现 LRU 缓存淘汰策略
 
 我们维护一个有序单链表，越靠近链表尾部的结点是越早之前访问的。当有一个新的数据被访问时，我们从链表头开始顺序遍历链表。
 
@@ -234,3 +224,76 @@ MyLinkedList.prototype.deleteAtIndex = function(index) {
 2. 如果此数据没有在缓存链表中，又可以分为两种情况：
   - 如果此时缓存未满，则将此结点直接插入到链表的头部；
   - 如果此时缓存已满，则链表尾结点删除，将新的数据结点插入链表的头部。
+
+
+## 双指针技巧
+虽然 **双指针技巧** 不是链表专用的，但是也算是比较常用的，在这里熟悉一下 **双指针技巧** 是怎么回事。
+
+两种使用双指针技巧的情景：
+- 两个指针 `从不同位置出发`：一个从始端开始，另一个从末端开始；
+- 两个指针 `以不同速度移动`：一个指针快一些，另一个指针慢一些。
+
+对于单链表，因为我们只能在一个方向上遍历链表，所以第一种情景可能无法工作。然而，第二种情景，也被称为 `慢指针和快指针技巧` ，是非常有用的。
+
+### 一个例子
+> 给定一个链表，判断链表中是否有环。
+
+一般很直观的就能想到 `缓存` ,遍历链表的时候将节点缓存，每次都判断当前节点是否在缓存中出现。
+
+```javascript
+/**
+ * @param {ListNode} head
+ * @return {boolean}
+ */
+var hasCycle = function(head) {
+  let hash = new Map()
+  let curNode = head
+  while (curNode) {
+    if (hash.has(curNode)) {
+      return true
+    }
+    hash.set(curNode)
+    curNode = curNode.next
+  }
+
+  return false
+}
+```
+
+但是我们可以使用 `双指针技巧` 轻松解决这个问题。
+
+想象一下，有两个速度不同的跑步者。如果他们在直路上行驶，快跑者将首先到达目的地。但是，如果它们在圆形跑道上跑步，那么快跑者如果继续跑步就会追上慢跑者。
+
+这正是我们在链表中使用两个速度不同的指针时会遇到的情况：
+
+1. 如果没有环，快指针将停在链表的末尾。
+2. 如果有环，快指针最终将与慢指针相遇。
+所以剩下的问题是：
+
+这两个指针的适当速度应该是多少？
+
+一个安全的选择是每次移动慢指针一步，而移动快指针两步。每一次迭代，快速指针将额外移动一步。如果环的长度为 `M`，经过 `M` 次迭代后，快指针肯定会多绕环一周，并赶上慢指针。
+
+```javascript
+/**
+ * @param {ListNode} head
+ * @return {boolean}
+ */
+var hasCycle = function(head) {
+  let slow = head
+  let fast = head
+
+  // 慢指针每次前进一步，快指针每次前进两步
+  while (fast && fast.next) {
+    slow = slow.next
+    fast = fast.next.next
+
+    if (slow === fast) {
+      return true
+    }
+  }
+
+  return false
+}
+```
+

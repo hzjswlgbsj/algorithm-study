@@ -1,0 +1,55 @@
+题目链接: https://leetcode.cn/leetbook/read/linked-list/jbex5/
+
+
+## 方法一：缓存
+一般很直观的就能想到 `缓存` ,遍历链表的时候将节点缓存，每次都判断当前节点是否在缓存中出现。
+
+```JavaScript
+/**
+ * @param {ListNode} head
+ * @return {boolean}
+ */
+var hasCycle = function(head) {
+  let hash = new Map()
+  let curNode = head
+  while (curNode) {
+    if (hash.has(curNode)) {
+      return true
+    }
+    hash.set(curNode)
+    curNode = curNode.next
+  }
+
+  return false
+};
+```
+
+## 方法二：双指针
+虽然 **双指针技巧** 不是链表专用的，但是也算是比较常用的，在这里熟悉一下 **双指针技巧** 是怎么回事。
+
+两种使用双指针技巧的情景：
+- 两个指针 `从不同位置出发`：一个从始端开始，另一个从末端开始；
+- 两个指针 `以不同速度移动`：一个指针快一些，另一个指针慢一些。
+
+对于单链表，因为我们只能在一个方向上遍历链表，所以第一种情景可能无法工作。然而，第二种情景，也被称为 `慢指针和快指针技巧` ，是非常有用的。
+```JavaScript
+/**
+ * @param {ListNode} head
+ * @return {boolean}
+ */
+var hasCycle = function(head) {
+  let slow = head
+  let fast = head
+  // 慢指针每次前进一步，快指针每次前进两步
+  while (fast && fast.next) {
+    slow = slow.next
+    fast = fast.next.next
+
+    if (slow === fast) {
+      return true
+    }
+  }
+
+  return false
+};
+```

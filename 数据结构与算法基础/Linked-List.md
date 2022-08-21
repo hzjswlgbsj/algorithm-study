@@ -235,7 +235,7 @@ MyLinkedList.prototype.deleteAtIndex = function(index) {
 
 对于单链表，因为我们只能在一个方向上遍历链表，所以第一种情景可能无法工作。然而，第二种情景，也被称为 `慢指针和快指针技巧` ，是非常有用的。
 
-### 一个例子
+### 环形链表
 > 给定一个链表，判断链表中是否有环。
 
 一般很直观的就能想到 `缓存` ,遍历链表的时候将节点缓存，每次都判断当前节点是否在缓存中出现。
@@ -296,4 +296,6 @@ var hasCycle = function(head) {
   return false
 }
 ```
+
+可以继续做一下 [环形链表 II](https://leetcode.cn/leetbook/read/linked-list/jjhf6/)，直接找出链表的环的位置。
 

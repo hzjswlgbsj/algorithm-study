@@ -216,7 +216,7 @@ MyLinkedList.prototype.deleteAtIndex = function(index) {
 };
 ```
 
-### 用链表实现 LRU 缓存淘汰策略
+### 用链表实现 最近最少使用策略LRU(Least Recently Used)
 
 我们维护一个有序单链表，越靠近链表尾部的结点是越早之前访问的。当有一个新的数据被访问时，我们从链表头开始顺序遍历链表。
 
@@ -226,7 +226,158 @@ MyLinkedList.prototype.deleteAtIndex = function(index) {
   - 如果此时缓存已满，则链表尾结点删除，将新的数据结点插入链表的头部。
 
 
-## 双指针技巧
+# 双链表
+双链表与单链表以类似的方式工作，但 `还有一个引用字段`，称为 `“prev”` 字段。有了这个额外的字段，您就能够知道当前结点的前一个结点。
+
+```
+         |---|---|---|    |---|---|---|    |---|---|---|
+null <---|-• | 4 | •-|--->|   | 7 | •-|--->|---| 9 | •-|---> null        
+         |   |   |   |<---|-• |   |   |<---|-• |   |   | 
+         |---|---|---|    |---|---|---|    |---|---|---| 
+```
+
+一般双链表可以标识为如下结构
+```typescript
+interface DoublyListNode {
+  val: numbar;
+  prev: DoublyListNode;
+  next: DoublyListNode;
+  DoublyListNode: (x: number) => { val = x }
+}
+```
+
+与单链表类似，我们可以与单链表相同的方式访问数据：
+
+- 我们不能在常量级的时间内访问随机位置。
+- 我们必须从头部遍历才能得到我们想要的第一个结点。
+- 在最坏的情况下，时间复杂度将是 O(N)，其中 N 是链表的长度。
+
+对于添加和删除，会稍微复杂一些，因为我们还需要处理 `“prev”` 字段。
+
+## 实现双链表
+
+### 分析与要求
+要求跟单链表一样，需要实现的方法也是一样
+
+### 双链表添加操作
+如果要在单链表的 `prev` 节点之后添加一个新的节点步骤如下：
+1. 创建一个新的节点 `cur`
+2. 链接 `cur` 与 `prev` 和 `next`，其中 `next` 是 `prev` 原始的下一个节点；
+3. 用 `cur` 重新链接 `prev` 和 `next`。
+
+如果是在头节点添加节点，除了上面的步骤外，还需要将 `cur` 节点d的 `next` 直接指向当前头节点。
+
+### 双链表删除操作
+
+如果我们想从双链表中删除一个现有的结点 `cur`，我们可以简单地将它的前一个结点 `prev` 与下一个结点 `next` 链接起来。
+
+如果要删除头节点的话可以直接将链表的 `head` 指向现在头节点的 `next` 节点
+
+### 实现
+```javascript
+var MyLinkedList = function() {
+    this.head = {val: null, prev: null, next: null}
+    this.length = 0
+    this.addOneNode = () => this.length++
+    this.reduceOneNode = () => this.length--
+    this.createOneNode = (val = 0, prev = null, next = null) => {
+        this.addOneNode()
+        return {val, prev, next}
+    }
+};
+
+/** 
+ * @param {number} index
+ * @return {number}
+ */
+MyLinkedList.prototype.get = function(index) {
+    // 过滤无效索引
+    if (typeof index !== 'number' || index < 0 || index >= this.length) {
+        return -1
+    }
+    let curr = this.head.next
+    for (let i = 0; i < index; i++) {
+        curr = curr.next
+    }
+    return curr.val
+};
+
+/** 
+ * @param {number} val
+ * @return {void}
+ */
+MyLinkedList.prototype.addAtHead = function(val) {
+    let firstNode = this.head.next
+    if (!firstNode) {
+        this.head.next = this.createOneNode(val)
+        return true
+    }
+    let node = this.createOneNode(val, null, firstNode)
+    firstNode.prev = node
+    this.head.next = node
+    return true
+};
+
+/** 
+ * @param {number} val
+ * @return {void}
+ */
+MyLinkedList.prototype.addAtTail = function(val) {
+    let curr = this.head
+    while (curr.next) {
+        curr = curr.next
+    }
+    curr.next = this.createOneNode(val, curr, null)
+    return true
+};
+
+/** 
+ * @param {number} index 
+ * @param {number} val
+ * @return {void}
+ */
+MyLinkedList.prototype.addAtIndex = function(index, val) {
+    if (index <= 0) {
+        this.addAtHead(val) // index <= 0,在链表头部添加
+    } else if (index === this.length) {
+        this.addAtTail(val) // index === length, 在链表尾部添加
+    } else if (index > this.length) {
+        // index > length, 无操作
+        return false
+    } else {
+        let curr = this.head
+        for (let i = 0; i < index; i++) {
+            curr = curr.next
+        }
+        let node = this.createOneNode(val, curr, curr.next)
+        curr.prev = node
+        curr.next = node
+    }
+    return true
+};
+
+/** 
+ * @param {number} index
+ * @return {void}
+ */
+MyLinkedList.prototype.deleteAtIndex = function(index) {
+    // 过滤无效索引
+    if (typeof index !== 'number' || index < 0 || index >= this.length) {
+        return -1
+    }
+    this.reduceOneNode()
+    let curr = this.head
+    for (let i = 0; i < index; i++) {
+        curr = curr.next
+    }
+    let next = curr.next.next
+    curr.next = next
+    if (next)  next.prev = curr
+};
+```
+
+
+# 双指针技巧
 虽然 **双指针技巧** 不是链表专用的，但是也算是比较常用的，在这里熟悉一下 **双指针技巧** 是怎么回事。
 
 两种使用双指针技巧的情景：
@@ -235,7 +386,7 @@ MyLinkedList.prototype.deleteAtIndex = function(index) {
 
 对于单链表，因为我们只能在一个方向上遍历链表，所以第一种情景可能无法工作。然而，第二种情景，也被称为 `慢指针和快指针技巧` ，是非常有用的。
 
-### 环形链表
+### 判断环形链表
 > 给定一个链表，判断链表中是否有环。
 
 一般很直观的就能想到 `缓存` ,遍历链表的时候将节点缓存，每次都判断当前节点是否在缓存中出现。

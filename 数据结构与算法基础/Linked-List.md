@@ -225,6 +225,95 @@ MyLinkedList.prototype.deleteAtIndex = function(index) {
   - 如果此时缓存未满，则将此结点直接插入到链表的头部；
   - 如果此时缓存已满，则链表尾结点删除，将新的数据结点插入链表的头部。
 
+简单实现, 题目链接：https://leetcode.cn/problems/lru-cache/
+```javascript
+/**
+ * @param {number} capacity
+ */
+var LRUCache = function (capacity) {
+  this.size = 0;
+  this.capacity = capacity;
+  this.cache = new Map();
+  // 使用伪头部和伪尾部节点
+  this.head = this.DLinkedNode();
+  this.tail = this.DLinkedNode();
+  this.head.next = this.tail;
+  this.tail.prev = this.head;
+};
+LRUCache.prototype.DLinkedNode = function (key, value) {
+  return {
+    key: key,
+    value: value,
+    prev: null,
+    next: null,
+  }
+}
+LRUCache.prototype.moveToHead = function (node) {
+  // 先删除，再移动
+  this.removeNode(node);
+  this.addToHead(node);
+}
+
+LRUCache.prototype.removeNode = function (node) {
+  node.prev.next = node.next;
+  node.next.prev = node.prev;
+}
+
+LRUCache.prototype.addToHead = function (node) {
+  node.prev = this.head
+  node.next = this.head.next
+  this.head.next.prev = node
+  this.head.next = node;
+}
+/** 
+ * @param {number} key
+ * @return {number}
+ */
+LRUCache.prototype.get = function(key) {
+  let node = this.cache.get(key)
+  if (!node) {
+    return -1
+  }
+
+  // 如果在缓存中存在，则删除并移动到头部
+  this.moveToHead(node)
+
+  return node.value
+};
+
+/** 
+ * @param {number} key 
+ * @param {number} value
+ * @return {void}
+ */
+LRUCache.prototype.put = function(key, value) {
+  // 先在缓存中查找
+  let node = this.cache.get(key)
+
+  // 如果 key 存在，先通过哈希表定位，再修改 value，并移到头部
+  if (node) {
+    node.value = value;
+    this.moveToHead(node);
+  } else {
+    // 如果缓存中没有，那就创建节点并移动到最前面
+    node = this.DLinkedNode(key, value);
+    this.cache.set(key, node)
+    this.addToHead(node)
+    this.size++
+
+    // 判断是否超出规定长度
+    if (this.size > this.capacity) {
+      // 如果超出容量，删除双向链表的尾部节点
+      const last = this.tail.prev
+      this.removeNode(last)
+
+      // 删除哈希表中对应的项
+      this.cache.delete(last.key);
+      this.size--;
+    }
+  }
+};
+```
 
 # 双链表
 双链表与单链表以类似的方式工作，但 `还有一个引用字段`，称为 `“prev”` 字段。有了这个额外的字段，您就能够知道当前结点的前一个结点。

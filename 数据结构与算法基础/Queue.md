@@ -215,3 +215,70 @@ MyCircularQueue.prototype.isFull = function() {
  * var param_6 = obj.isFull()
  */
 ```
+
+## 队列与 BFS
+
+使用 BFS 的两个主要方案：`遍历` 或 `找出最短路径`。通常，这发生在树或图中。正如我们在章节描述中提到的，BFS 也可以用于更抽象的场景中。
+
+下面给出 BFS 的模板
+
+```java
+/**
+ * 返回根节点到目标节点之间最短路径的长度。
+ */
+int BFS(Node root, Node target) {
+  Queue<Node> queue;  // 存储等待处理的所有节点
+  int step = 0;       // 从根到当前节点的步骤数量
+  // initialize
+  add root to queue;
+  // BFS
+  while (queue is not empty) {
+      step = step + 1;
+      // 迭代已经在队列中的节点
+      int size = queue.size();
+      for (int i = 0; i < size; ++i) {
+          Node cur = the first node in queue;
+          return step if cur is target;
+          for (Node next : the neighbors of cur) {
+              add next to queue;
+          }
+          remove the first node from queue;
+      }
+  }
+  return -1; // 没有从根到目标的路径
+}
+```
+
+模板二
+
+```java
+/**
+ * 返回根节点到目标节点之间最短路径的长度。
+ */
+int BFS(Node root, Node target) {
+  Queue<Node> queue;  // 存储等待处理的所有节点
+  Set<Node> used;     // 存储所有使用的节点
+  int step = 0;       // 从根到当前节点的步骤数量
+  // initialize
+  add root to queue;
+  add root to used;
+  // BFS
+  while (queue is not empty) {
+    step = step + 1;
+    // 迭代已经在队列中的节点
+    int size = queue.size();
+    for (int i = 0; i < size; ++i) {
+      Node cur = the first node in queue;
+      return step if cur is target;
+      for (Node next : the neighbors of cur) {
+        if (next is not in used) {
+          add next to queue;
+          add next to used;
+        }
+      }
+      remove the first node from queue;
+    }
+  }
+  return -1; // 没有从根到目标的路径
+}
+```

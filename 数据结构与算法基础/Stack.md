@@ -14,10 +14,90 @@
 
 ## 实现
 
-栈的实现比队列容易，`动态数组` 足以实现堆栈结构
+从刚才栈的定义里，我们可以看出，栈主要包含两个操作，入栈和出栈，也就是在栈顶插入一个数据和从栈顶删除一个数据。
 
-### 基于数组实现
+栈既可以用数组来实现，也可以用链表来实现。用数组实现的栈，我们叫作 `顺序栈`，用链表实现的栈，我们叫作 `链式栈`。
+
+### 基于数组实现的顺序栈
 
 ```typescript
+class ArrayStack {
+  private items: string[]; // 数组
+  private count: number; // 栈中元素个数
+  private n: number;  //栈的大小
 
+  // 初始化数组，申请一个大小为n的数组空间
+  construct(int n) {
+    this.items = new Array(n).fill(n)
+    this.n = n;
+    this.count = 0;
+  }
+
+  // 入栈操作
+  public push(item: string): boolean {
+    // 数组空间不够了，直接返回false，入栈失败。
+    if (this.count == n) {
+      return false
+    };
+
+    // 将item放到下标为count的位置，并且count加一
+    this.items[this.count] = item;
+    ++this.count;
+    return true;
+  }
+
+  // 出栈操作
+  public pop(): string {
+    // 栈为空，则直接返回null
+    if (this.count == 0) {
+      return null
+    };
+
+    // 返回下标为count-1的数组元素，并且栈中元素个数count减一
+    const tmp: string = this.items[this.count - 1];
+    --this.count;
+    return tmp;
+  }
+}
+```
+
+### 基于链表实现的链式栈
+
+```typescript
+class Node {
+  construct(val: string, next: Node) {
+    this.val = val;
+    this.next = next;
+  }
+}
+
+class LinkedListStack {
+  construct() {
+    this.top = null;
+    this.length = 0;
+  }
+
+  // 入栈操作
+  public push(item: string): boolean {
+    if (!this.top) {
+      this.top = node;
+      this.length++;
+    } else {
+      node.next = this.top;
+      this.top = node;
+      this.length++;
+    }
+  }
+
+  // 出栈操作
+  public pop(): string {
+    let res = this.top || undefined;
+    // 删除栈顶
+    if (this.top) {
+      this.top = this.top.next;
+      this.length--;
+    }
+    return res;
+  }
+}
 ```

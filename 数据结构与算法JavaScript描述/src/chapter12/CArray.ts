@@ -3,9 +3,9 @@
  */
 
 interface ICArray {
-  dataStore: any[]; // 
+  dataStore: any[]; //
   pos: number; //
-  numElements: number; // 
+  numElements: number; //
   insert: (v: any) => void;
   toString: () => string;
   clear: () => void;
@@ -24,14 +24,14 @@ export class CArray implements ICArray {
       this.dataStore[i] = i;
     }
   }
-  
+
   public setData() {
-    for ( let i = 0; i < this.numElements; ++i ) {
-      this.dataStore[i] = Math.floor(Math.random() * (this.numElements + 1)); 
+    for (let i = 0; i < this.numElements; ++i) {
+      this.dataStore[i] = Math.floor(Math.random() * (this.numElements + 1));
     }
   }
   public clear() {
-    for ( let i = 0; i < this.dataStore.length; ++i ) {
+    for (let i = 0; i < this.dataStore.length; ++i) {
       this.dataStore[i] = 0;
     }
   }
@@ -39,24 +39,24 @@ export class CArray implements ICArray {
     this.dataStore[this.pos++] = element;
   }
   public toString() {
-    let res = '';
-    for (let i = 0; i < this.dataStore.length; ++i ) {
+    let res = "";
+    for (let i = 0; i < this.dataStore.length; ++i) {
       res += this.dataStore[i] + " ";
       if (i > 0 && i % 10 == 0) {
         res += "\n";
       }
     }
-    return res; 
+    return res;
   }
 
   public swap(arr: any[], index1: number, index2: number) {
     const temp = arr[index1];
     arr[index1] = arr[index2];
-    arr[index2] = temp; 
+    arr[index2] = temp;
   }
 
   /**
-   * 冒泡排序
+   * 冒泡排序 O(n^2)
    * 1.比较相邻的元素。如果第一个比第二个大，就交换他们两个。
    * 2.对每一对相邻元素作同样的工作，从开始第一对到结尾的最后一对。这步做完后，最后的元素会是最大的数。
    * 3.针对所有的元素重复以上的步骤，除了最后一个。
@@ -67,11 +67,38 @@ export class CArray implements ICArray {
       for (let i = 0; i < this.dataStore.length; i++) {
         for (let j = 0; j < this.dataStore.length - i; j++) {
           if (this.dataStore[j] > this.dataStore[j + 1]) {
-            this.swap(this.dataStore, j, j + 1)
-          }    
-        }          
+            this.swap(this.dataStore, j, j + 1);
+          }
+        }
       }
     }
+  }
+
+  /**
+   * 快速排序 O(n*logn)
+   * 1.给数组找一个标志位 flag
+   * 2.遍历所有剩余的元素都跟标志位元素比大小
+   * 3.定义一个 left 和 一个 right，left 保存比标志位小的，right 保存比标志位大的
+   * 4.然后合并 left、flag、right
+   * 5.然后递归把 left 和 right 数组做相同的操作
+   */
+  public quickSort(array: number[]): number[] {
+    if (array.length < 2) {
+      return array;
+    }
+
+    let flag = array[0];
+    let left: number[] = [];
+    let right: number[] = [];
+    for (let i = 1; i < array.length; i++) {
+      if (array[i] < flag) {
+        left.push(array[i]);
+      } else {
+        right.push(array[i]);
+      }
+    }
+
+    return this.quickSort(left).concat(flag, this.quickSort(right));
   }
 
   /**
@@ -88,15 +115,15 @@ export class CArray implements ICArray {
         // 从未排序中找到最小值的下标
         for (let j = i + 1; j < this.dataStore.length; j++) {
           if (this.dataStore[j] < this.dataStore[min]) {
-            min = j // 这就是本轮最小值的下标
+            min = j; // 这就是本轮最小值的下标
           }
-          
-          this.swap(this.dataStore, i, min) // 找到本轮最小的下标后将找到的值与当前值交换位置
+
+          this.swap(this.dataStore, i, min); // 找到本轮最小的下标后将找到的值与当前值交换位置
         }
       }
     }
   }
-  
+
   /**
    * 插入排序
    * 1.将第一待排序序列第一个元素看做一个有序序列，把第二个元素到最后一个元素当成是未排序序列。
@@ -104,23 +131,23 @@ export class CArray implements ICArray {
    *   如果待插入的元素与有序序列中的某个元素相等，则将待插入元素插入到相等元素的后面。
    */
   public insertionSort() {
-    const len = this.dataStore.length
-    let preIndex,current
+    const len = this.dataStore.length;
+    let preIndex, current;
     for (let i = 1; i < len; i++) {
-      preIndex = i - 1
-      current = this.dataStore[i]
+      preIndex = i - 1;
+      current = this.dataStore[i];
 
       // 每进入一次循环，已经排好的数组长度+i了，如果当前值小于他的前一个值，那么前一个值应该
       // 放到当前值的这个位置来，然后一直循环做这个判断直到前一个值比当前值小，那当前这个位置
       // 就是当前值应该放入的位置。而当前值位置用 preIndex + 1表示
       while (preIndex >= 0 && this.dataStore[preIndex] > current) {
         // 将前一个值放入到当前位置，然后继续用当前值去比较前面的值
-        this.dataStore[preIndex + 1] = this.dataStore[preIndex]
-        preIndex-- // 前一个值的位置向前推移，继续判断
+        this.dataStore[preIndex + 1] = this.dataStore[preIndex];
+        preIndex--; // 前一个值的位置向前推移，继续判断
       }
 
       // 此时前一个值已经比当前值小了，所以当前位置就是当前值要插入的位置
-      this.dataStore[preIndex + 1] = current
+      this.dataStore[preIndex + 1] = current;
     }
   }
 
@@ -129,13 +156,13 @@ export class CArray implements ICArray {
    * 希尔排序的基本思想是：先将整个待排序的记录序列分割成为若干子序列分别进行直接插入排序，
    * 待整个序列中的记录"基本有序"时，再对全体记录进行依次直接插入排序。
    * 希尔排序详解：https://zhuanlan.zhihu.com/p/87781731
-   * 
+   *
    */
   public shellSort() {
-    const len = this.dataStore.length
-    let gap = 1
+    const len = this.dataStore.length;
+    let gap = 1;
     while (gap < len / 3) {
-      gap = gap * 3 + 1
+      gap = gap * 3 + 1;
     }
 
     // 每个增量值执行一遍插入排序
@@ -143,11 +170,15 @@ export class CArray implements ICArray {
       // 从增量值开始，从后往前遍历
       for (let i = gap; i < len; i++) {
         // 从后往前遍历，如果后面的比前面的小交换位置，然后减掉增量值继续下一次遍历
-        for (let j = i; j >= gap && this.dataStore[j] < this.dataStore[j - gap]; j -= gap) {
-          this.swap(this.dataStore, j, j - gap)
+        for (
+          let j = i;
+          j >= gap && this.dataStore[j] < this.dataStore[j - gap];
+          j -= gap
+        ) {
+          this.swap(this.dataStore, j, j - gap);
         }
       }
-      gap = (gap - 1) / 3 // 一轮后更新增量值
+      gap = (gap - 1) / 3; // 一轮后更新增量值
     }
   }
 
@@ -162,38 +193,38 @@ export class CArray implements ICArray {
     // mergeSort(p…r) = merge(mergeSort(p…q), mergeSort(q+1…r))
     // 终止条件：p >= r 不用再继续分解
     if (arr.length < 2) {
-      return arr
+      return arr;
     }
 
-    const middle = Math.floor(arr.length / 2)
-    const left = arr.slice(0, middle)
-    const right = arr.slice(middle)
-    return this.merge(this.mergeSort(left), this.mergeSort(right))
+    const middle = Math.floor(arr.length / 2);
+    const left = arr.slice(0, middle);
+    const right = arr.slice(middle);
+    return this.merge(this.mergeSort(left), this.mergeSort(right));
   }
 
   /**
    * 按照大小合并两个数组
    */
   public merge(left: any[], right: any[]): any[] {
-    const res: any[] = []
+    const res: any[] = [];
 
     while (left.length > 0 && right.length > 0) {
       if (left[0] <= right[0]) {
-        res.push(left.shift())
+        res.push(left.shift());
       } else {
-        res.push(right.shift())
+        res.push(right.shift());
       }
     }
 
     while (left.length > 0) {
-      res.push(left.shift())
+      res.push(left.shift());
     }
 
     while (right.length > 0) {
-      res.push(right.shift())
+      res.push(right.shift());
     }
 
-    return res
+    return res;
   }
 
   /**
@@ -201,59 +232,70 @@ export class CArray implements ICArray {
    */
   public mergeSort2() {
     if (this.dataStore.length < 2) {
-      return
+      return;
     }
 
-    let step = 1
-    let left, right
+    let step = 1;
+    let left, right;
     while (step < this.dataStore.length) {
-      left = 0
-      right = step
+      left = 0;
+      right = step;
       while (right + step < this.dataStore.length) {
-        this.merge2(this.dataStore, left, left + step, right, right + step)
-        left = right + step
-        right = left + step
+        this.merge2(this.dataStore, left, left + step, right, right + step);
+        left = right + step;
+        right = left + step;
       }
 
       if (right < this.dataStore.length) {
-        this.merge2(this.dataStore, left, left + step, right, this.dataStore.length)
+        this.merge2(
+          this.dataStore,
+          left,
+          left + step,
+          right,
+          this.dataStore.length
+        );
       }
 
-      step *= 2
+      step *= 2;
     }
   }
 
-  public merge2(arr: number[], startLeft: number, stopLeft: number, startRight: number, stopRight: number) {
-    let leftArr = new Array(stopLeft - stopLeft + 1)
-    let rightArr = new Array(stopRight - stopRight + 1)
-    let k = startRight
-    for (let i = 0; i< rightArr.length - 1; i++) {
-      rightArr[i] = arr[k]
-      k++
+  public merge2(
+    arr: number[],
+    startLeft: number,
+    stopLeft: number,
+    startRight: number,
+    stopRight: number
+  ) {
+    let leftArr = new Array(stopLeft - stopLeft + 1);
+    let rightArr = new Array(stopRight - stopRight + 1);
+    let k = startRight;
+    for (let i = 0; i < rightArr.length - 1; i++) {
+      rightArr[i] = arr[k];
+      k++;
     }
 
-    k = startLeft
-    for (let i = 0; i< leftArr.length - 1; i++) {
-      leftArr[i] = arr[k]
-      k++
+    k = startLeft;
+    for (let i = 0; i < leftArr.length - 1; i++) {
+      leftArr[i] = arr[k];
+      k++;
     }
 
-    leftArr[leftArr.length - 1] = Infinity // 哨兵值
-    rightArr[rightArr.length - 1] = Infinity // 哨兵值
-    let m = 0
-    let n = 0
+    leftArr[leftArr.length - 1] = Infinity; // 哨兵值
+    rightArr[rightArr.length - 1] = Infinity; // 哨兵值
+    let m = 0;
+    let n = 0;
     for (let k = startLeft; k < stopRight; k++) {
-      if(leftArr[m] <= rightArr[n]) {
-        arr[k] = leftArr[m]
-        m++
+      if (leftArr[m] <= rightArr[n]) {
+        arr[k] = leftArr[m];
+        m++;
       } else {
-        arr[k] = rightArr[n]
-        n++
+        arr[k] = rightArr[n];
+        n++;
       }
     }
 
-    console.log('leftArr', leftArr)
-    console.log('rightArr', rightArr)
+    console.log("leftArr", leftArr);
+    console.log("rightArr", rightArr);
   }
 }
-

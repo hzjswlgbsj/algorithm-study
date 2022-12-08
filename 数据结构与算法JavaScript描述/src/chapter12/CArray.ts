@@ -102,6 +102,20 @@ export class CArray implements ICArray {
   }
 
   /**
+   * 原地快速排序 O(n*logn)
+   * 1.给数组找一个标志位 flag
+   * 2.遍历所有剩余的元素都跟标志位元素比大小
+   * 3.定义一个 left 和 一个 right，left 保存比标志位小的，right 保存比标志位大的
+   * 4.然后合并 left、flag、right
+   * 5.然后递归把 left 和 right 数组做相同的操作
+   */
+  public quickLocalSort(array: number[]): number[] {
+    // if (array.length < 2) {
+    //   return array;
+    // }
+  }
+
+  /**
    * 选择排序
    * 1.首先在未排序序列中找到最小（大）元素，存放到排序序列的起始位置
    * 2.再从剩余未排序元素中继续寻找最小（大）元素，然后放到已排序序列的末尾。

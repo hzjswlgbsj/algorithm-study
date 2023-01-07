@@ -1,7 +1,8 @@
-/**
- * 可以参考十大排序算法（有动图）：https://juejin.cn/post/6844903444365443080#heading-14
- */
+# 排序算法
 
+将分析直接写在代码的注释中了
+
+```typescript
 interface ICArray {
   dataStore: any[]; //
   pos: number; //
@@ -82,7 +83,7 @@ export class CArray implements ICArray {
    * 4.然后合并 left、flag、right
    * 5.然后递归把 left 和 right 数组做相同的操作
    */
-  public quickSort(arr: number[]): number[] {
+  function quickSort(arr) {
     // 如果数组的长度小于等于 1，则不需要排序
     if (arr.length <= 1) {
       return arr;
@@ -105,7 +106,20 @@ export class CArray implements ICArray {
     }
 
     // 递归地对小于基准元素的数组和大于基准元素的数组进行快速排序
-    return this.quickSort(left).concat([pivot]).concat(this.quickSort(right));
+    return quickSort(left).concat([pivot]).concat(quickSort(right));
+  }
+
+  /**
+   * 原地快速排序 O(n*logn)
+   * 1.给数组找一个标志位 flag
+   * 2.定义两个指针，i和j，i从左到右对比，j反之
+   * 3.最后i和j相遇，此时在交换i和j就得到了排序好的序列
+   */
+  public quickLocalSort(array: number[]): number[] {
+    if (array.length < 2) {
+      return array;
+    }
+
   }
 
   /**
@@ -306,3 +320,8 @@ export class CArray implements ICArray {
     console.log("rightArr", rightArr);
   }
 }
+```
+
+## 参考
+
+1. [十大排序算法](https://juejin.cn/post/6844903444365443080#heading-14)

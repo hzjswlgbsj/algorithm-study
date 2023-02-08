@@ -111,14 +111,23 @@ export class CArray implements ICArray {
 
   /**
    * 原地快速排序 O(n*logn)
-   * 1.给数组找一个标志位 flag
-   * 2.定义两个指针，i和j，i从左到右对比，j反之
-   * 3.最后i和j相遇，此时在交换i和j就得到了排序好的序列
+   * 1.给数组找一个标志位 flag，这个标志位左边比比标志位小，右边比标志位大
+   *   a.定义两个指针，i和j，i从左到右对比，j反之
+   *   b.最后i和j相遇，此时在交换i和j就得到了排序好的序列
    */
-  public quickLocalSort(array: number[]): number[] {
-    if (array.length < 2) {
-      return array;
+  public quickLocalSort(array: number[], start: number, end: number): number[] {
+    // 如果能正常从 start和end之间取到值就寻找标志位
+    if(start < end) {
+      let index = this._quick(array, start, end)
+      // 以标志位分为左右两侧
+      this.quickLocalSort(array, start, index - 1)
+      this.quickLocalSort(array, index, end)
     }
+
+    return array
+  }
+
+  private _quick(arr: number[], start: number, end: number) {
 
   }
 

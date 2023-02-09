@@ -127,8 +127,35 @@ export class CArray implements ICArray {
     return array
   }
 
-  private _quick(arr: number[], start: number, end: number) {
+  private _quick(array: number[], start: number, end: number) {
+    // 双指针
+    ler init = start
+    let flag = array[init]
+    start++
 
+    // 当前左右指针没有遇见的时候就一直比较，直到找到
+    // 左边比flag大的，右边比flag小的，然后再交换位置即可
+    while(start <= end) {
+      // 先判断右边，右边一直比flag大就不用管，一直往左移
+      while(array[end] > flag) {
+        end--
+      }
+      while(array[start] < flag) {
+        start++
+      }
+
+      // 此时左边找到了比flag大的，右边找到了flag小的
+      // 如果还符合start < end的清空然后再交换位置即可
+      if (start < end) {
+         [array[start], array[end]] = [array[end], array[start]]
+         start++
+         end--
+      }
+    }
+
+    // 最后结束后，需要交换一下初始值和当前start-1的位置
+    [array[init], array[start - 1]] = [array[start - 1], array[init]]
+    return start // 这就是找到的标志位，返回出去
   }
 
   /**

@@ -268,9 +268,22 @@ export function postorderTraversalNonRecursive(
 }
 ```
 
-二叉树的后序遍历非递归实现相对来说要复杂一些，我们来详细分析一下。
+二叉树的后序遍历非递归实现相对来说要复杂一些，再来捋一捋。
 
 与中序遍历不同的是我们需要使用一个指针 `prev` 记录“上一个访问的节点”，以此判断“右子树是否已经被访问”。
+
+```javascript
+先访问左子树 → 右子树 → 根节点
+      A
+     / \
+    B   C
+    / \   \
+   D   E   F
+      / \
+     G   H
+ 
+访问顺序：D → G → H → E → B → F → C → A
+```
 
 **关键点解释：**
 
@@ -287,6 +300,33 @@ export function postorderTraversalNonRecursive(
    - 如果它没有右子树，或者右子树已访问过，则访问它。
    - 否则进入右子树。
 3. 每次访问后，更新 `prev = 当前节点`，用于下次判断。
+
+其实还可以使用前序反转法，就是前序遍历改一下，先访问右子树，再访问左子树，这样就是后序遍历的逆序。
+
+```typescript
+/**
+ * Trick：变形前序遍历 + reverse
+ * 遍历顺序：根 → 右 → 左，再反转成 左 → 右 → 根（即后序）
+ */
+export function postorderTraversalViaReverse(root: TreeNode | null): number[] {
+  if (!root) return [];
+
+  const result: number[] = [];
+  const stack: TreeNode[] = [root];
+
+  while (stack.length > 0) {
+    const node = stack.pop()!;
+    result.push(node.val);
+
+    // 注意：先压左，再压右，这样出栈顺序是右 → 左
+    if (node.left) stack.push(node.left);
+    if (node.right) stack.push(node.right);
+  }
+
+  return result.reverse();
+}
+
+```
 
 #### 普通树的深度优先遍历
 
